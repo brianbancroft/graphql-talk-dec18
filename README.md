@@ -9,23 +9,23 @@
 - Talking of each section should not exceed 8m. 2m For questions each
 
 
-### Introduction
+### > Introduction
 
 > (what, where, why) 5m
 
-### 1 - Business Overview
+### > 1 - Business Overview
 
 > 10m
 
-### 2 - Technical Overview
+### > 2 - Technical Overview
 
 > 10m
 
-### 3 - Hands-on
+### > 3 - Hands-on
 
 > 10m
 
-### Conclusion and Questions
+### > Conclusion and Questions
 
 > 5-15m
 
@@ -37,7 +37,7 @@ Hi there, my name is Brian. All of you know me as one of the in-and-out members 
 
 GraphQL is a specific way of making API requests using rest that is maintainable and iterable in specific use cases, and is used by major content players all over the internet.
 
-I will be starting this lesson with a quick business overview, intended for the non-technical members of Sparkgeo. You're going to know the high-level as this is going to be a noun you will hear more of in the confrence and sales circuts of 2019.
+I will be starting this lesson with a high-level business overview, intended for the non-technical members of Sparkgeo. This is something worth knowing as this is going to be a noun you will hear more of in the confrence and sales circuts of 2019.
 
 Then I will be breaking off into the technical aspects. Finally in the third part, everyone will get to play with a little hands-on with a sandbox which I've built, for among other reasons, to demo this concept!
 
@@ -47,30 +47,24 @@ Then I will be breaking off into the technical aspects. Finally in the third par
 
 ## Part 1: Business Overview
 
+In this part, I'm going to talk about GrapqhQL from a high level. What is it? What is it not? How did it come to be?
 
 ###  What is GraphQL
 
-GraphQL is a query language in which clients can request things from the server, but only the things which they want. Imagine querying a record that gets you the following attributes:
+GraphQL is a query language in which clients can request things from the server, but only the things which they want.
 
-| Column | Type |
-| ------ | ---- |
-| id     | string |
-| name | string |
-| email | string |
-| favorite color | string |
-| quest | string |
-| airspeed_velocity_of_swallow | string |
+Imagine you had an existing server endpoint that provisions content for the user. Maybe there's some changes. Graphql allows front-end developers to make changes to what comes from the server, without having to change the code on the server.
 
 If you're a mobile developer, and you only want just the name and the email transmitted, you would have to have a modification to the server access point, or a different API endpoint altogether. With a GraphQL endpoint, the client-side developers can choose which attributes to obtain from the request, and which ones not to grab altogether.
+
+
 
 
 In 2012, Facebook built this as a way of allowing mobile and front-end developers to build tighter news feeds, quickly. In 2015, it was publicly released, to which open source communities starting building their own implementations. Then just in November, it became completely open source, and under the reigns of a foundation which answers to the Linux Foundation.
 
 GraphQL is a mature technology, and [npm identified it "a technical force to reckon with in 2019"](https://blog.npmjs.org/post/180868064080/this-year-in-javascript-2018-in-review-and-npms).
 
-![](https://66.media.tumblr.com/d673a9d79f5330f2247e9c8ae62146eb/tumblr_inline_pjbzpiau251ukt7ok_500.png)
-
-
+![npm-chart](https://66.media.tumblr.com/d673a9d79f5330f2247e9c8ae62146eb/tumblr_inline_pjbzpiau251ukt7ok_500.png)
 
 ### Who else uses it
 
@@ -81,11 +75,13 @@ GraphQL is used by a wide variety of shops and organizations, ranging from Faceb
 As with many new technologies, there should be a lot of skepticism toward instant adoption, at least until the early adopters have figured out all the trouble spots first. Now that this has had more than three years to mature, this should be something on the radar of developers and architects. It should not be made a replacement to each and every REST endpoint, but instead a supplement.
 
 GraphQL is useful for client-facing API's where bandwidth and minimizing number of round trips is an important consideration.
+
 - If your API contains a single endpoint that returns one thing, stick with REST
 - If your API is a tileserver, stick with REST,
 - If minimizing number of SQL Queries is important, have a long think...
 
 _But..._
+
 - If your API serves content for a timeline or feed (facebook, twitter, instragram),
 - If your API is an aggregation of microservices; or,
 - If managing number of roundtrips or content is important
@@ -94,6 +90,7 @@ Consider using GraphQL?
 
 
 #### Languages which support GraphQL
+
 For server-side, there are many tools available:
 
 - Graphene (Python)
@@ -106,14 +103,14 @@ For the client-side, there is also a series of open-source libraries:
 - `Apollo-Client` (JS/Node)
 - `gql` (Python, Go)
 
-
 ## Part 2: Technical Overview
 
-### Talking to the server
+### Talking to the Server
+
 GraphQL query types come in three flavours:
 
 1. `Query` -> I want stuff
-2. `Mutarion` -> I want to modify stuff
+2. `Mutation` -> I want to modify stuff
 3. `Subscription` -> I want a real-time feed to stuff
 
 Here, we're going to dive a bit deeper into each of each one
@@ -190,41 +187,89 @@ Will return
 ```
 
 #### Mutations
-Mutations take up the other sections in a REST CRUD app. Create, Update, Delete.
+Mutations take up the other sections in a REST CRUD app. Create, Update, Delete. But instead of having those distinctions, graphql allows the designers to explain the purposes at the naming level.
 
- > TODO: Explanation
- > TODO: Example of Create
- > TODO: Example of Update
- > TODO: Example of Delete
+- Mutations almost always require some arguments, in brackets.
+- Mutations will also require the user to return data to the front-end.
 
+##### Example: Authentication
 
-#### Subscriptions
-(not implemented in this application)
+Authentication can be done through mutation (and yes, Authzero does [support graphql in its authentication](https://blog.pusher.com/handling-authentication-in-graphql-auth0/))
 
+```graphql
+  mutation AuthenticateExample {
+    authenticate(username: "brian", password: "thisisapassword") {
+      success
+      token
+      error {
+        message
+      }
+    }
+  }
+```
 
+This will return the following:
+
+```json
+  {
+    "data": {
+      "authenticate": {
+        "success": true,
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjMsImVtYWlsIjoiYnJpYW5Ac3BhcmtnZW8uY29tIiwidXNlcm5hbWUiOiJicmlhbiIsImlhdCI6MTU0NDU2MDkwMCwiZXhwIjoxNTc2MTE4NTAwfQ.CrdutXBa5OrihpV3Q1KajG72WJs6Nr-pSQt7yaKEokU",
+        "error": null
+      }
+    }
+  }
+```
+
+Most graphql clients such as apollo-client can take the resulting JWT, and consume it.
+
+##### Example: Creating new Records
+
+This is the same idea, what you have is a new record:
+
+```graphql
+  mutation CreatePost {
+    createPost(title: "Highline Beta works with Corporations to acheive innovation and zero deaths", uri: "https://highlinebeta.com/") {
+      success
+    }
+  }
+```
+
+The result is both visible on the front-page, as well as in the response:
+
+```json
+{
+  "data": {
+    "createPost": {
+      "success": true
+    }
+  }
+}
+```
+
+In this section, what I've talked about are queries and mutations. Queries are when you want to get things, while Mutations are when you want to add things. This things can be stacked, and they can be nested as well.
+
+#### Questions
 
 ### Part 3: Hands-on
 
-Okay. I've talked. Let's walk. In this section, I'm going to demo some queries and mutators. If you want to try yourself, go straight to https://nullislande.rs/graphql.
+Okay. I've talked. Let's walk. In this section, I'm going to demo some queries and mutators. If you want to try yourself, go straight to [trynullislande.rs/graphql](https://try.nullislande.rs/graphql).
 
 > All this content is available and abstracted to my best abilities. You can find the example client source code at https://github.com/brianbancroft/nullislanders-spa-client, and the example server source code over at https://github.com/brianbancroft/nullislanders. While the scope of both respositories will change over time, they will both serve and consume GraphQL
 
-#### Creating Queries
+- Demonstrate a query, live where get all posts for a given user
+- Demonstrate how to get the comments of all the posts for a given user
+- Demonstrate how to carry out a mutation.
 
-- Create a queries for all posts
-- Create a query for a single post
-- Create a query for all posts with users
-
-#### Creating Mutations
-For this exercise, I've left upvoting open without requiring user authentication.
 
 ### Conclusion and Questions
 
 Wow. In the last 35 minutes, we've covered a lot of ground. What we've talked about includes:
+
 - What is graphql, when was it, and when could we use it
 - Parts of graphql, including queries and mutators
 - We also concluded with a run-down of how to do queries and mutators
-
 
 > _Fin_
 
